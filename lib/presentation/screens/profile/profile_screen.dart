@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sandu_app/core/constants/app_colors.dart';
 import 'package:sandu_app/core/constants/app_sizes.dart';
 import 'package:sandu_app/core/utils/navigator.dart';
+import 'package:sandu_app/presentation/screens/home/home_screen.dart';
+import 'package:sandu_app/presentation/screens/profile/edit_profile/edit_profile_screen.dart';
 import 'package:sandu_app/presentation/widgets/button_width_text.dart';
 import 'package:sandu_app/presentation/widgets/logout_button.dart';
 
@@ -18,21 +20,76 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   // List Buttons
   final List<Map<String, dynamic>> buttonList = [
-    {'icon': Icons.person_rounded, 'name': 'Edit Profil', 'onTap': () {}},
-    {'icon': Icons.description_rounded, 'name': 'Dokumen Saya', 'onTap': () {}},
+    {
+      'icon': Icons.person_rounded,
+      'name': 'Edit Profil',
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
+    },
+    {
+      'icon': Icons.description_rounded,
+      'name': 'Dokumen Saya',
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
+    },
     {
       'icon': Icons.storefront_outlined,
       'name': 'UMKM atau Toko',
-      'onTap': () {},
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
     },
-    {'icon': Icons.groups_rounded, 'name': 'Grup Komunitas', 'onTap': () {}},
+    {
+      'icon': Icons.groups_rounded,
+      'name': 'Grup Komunitas',
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
+    },
     {
       'icon': Icons.history_edu_rounded,
       'name': 'Riwayat Laporan & Pengajuan',
-      'onTap': () {},
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
     },
-    {'icon': Icons.settings, 'name': 'Pengaturan', 'onTap': () {}},
-    {'icon': Icons.help_rounded, 'name': 'Bantuan & Support', 'onTap': () {}},
+    {
+      'icon': Icons.settings,
+      'name': 'Pengaturan',
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
+    },
+    {
+      'icon': Icons.help_rounded,
+      'name': 'Bantuan & Support',
+      'onTap': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(
+          context,
+          EditProfileScreen(),
+        );
+      },
+    },
   ];
 
   // Logout
@@ -280,7 +337,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                             ButtonWidthText(
                               text: 'Lengkapi',
-                              onPressed: () {},
+                              onPressed: () {
+                                NavigationHelper.navigateWithSlideTransition(
+                                  context,
+                                  EditProfileScreen(),
+                                );
+                              },
                               fontSize: 12,
                               colors: [
                                 AppColors.cyan1,
@@ -381,7 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class _ProfileMenuItem extends StatefulWidget {
   final IconData icon;
   final String name;
-  final VoidCallback onTap;
+  final Function(BuildContext) onTap;
 
   const _ProfileMenuItem({
     required this.icon,
@@ -419,7 +481,7 @@ class _ProfileMenuItemState extends State<_ProfileMenuItem> {
               onTapCancel: () => _isPressed.value = false,
               onTap: () {
                 _isPressed.value = false;
-                widget.onTap();
+                widget.onTap(context);
               },
               child: MouseRegion(
                 onEnter: (_) => _isHovered.value = true,

@@ -57,16 +57,16 @@ class _ButtonWidthSVGState extends State<ButtonWidthSVG> {
           valueListenable: _isPressed,
           builder: (context, isPressed, child) {
             return GestureDetector(
-              onTapDown: (_) => setState(() => _isPressed.value = true),
-              onTapUp: (_) => setState(() => _isPressed.value = false),
-              onTapCancel: () => setState(() => _isPressed.value = false),
+              onTapDown: (_) => _isPressed.value = true,
+              onTapUp: (_) => _isPressed.value = false,
+              onTapCancel: () => _isPressed.value = false,
               onTap: () {
-                setState(() => _isPressed.value = false);
+                _isPressed.value = false;
                 widget.onPressed(context);
               },
               child: MouseRegion(
-                onEnter: (_) => setState(() => _isHovered.value = true),
-                onExit: (_) => setState(() => _isHovered.value = false),
+                onEnter: (_) => _isHovered.value = true,
+                onExit: (_) => _isHovered.value = false,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInOut,

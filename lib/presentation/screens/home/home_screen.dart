@@ -10,15 +10,16 @@ import 'package:sandu_app/presentation/screens/home/education/education_screen.d
 import 'package:sandu_app/presentation/screens/home/environment/environment_screen.dart';
 import 'package:sandu_app/presentation/screens/home/government/government_screen.dart';
 import 'package:sandu_app/presentation/screens/home/health/health_screen.dart';
+import 'package:sandu_app/presentation/screens/home/posyandu/posyandu_screen.dart';
 import 'package:sandu_app/presentation/screens/home/social/social_screen.dart';
 import 'package:sandu_app/presentation/screens/home/umkm/umkm_screen.dart';
 import 'package:sandu_app/presentation/widgets/button_width_svg.dart';
 import 'package:sandu_app/presentation/widgets/button_width_icon.dart';
-import 'package:sandu_app/presentation/widgets/button_width_text.dart';
 import 'package:sandu_app/presentation/widgets/card_text_button.dart';
 import 'package:sandu_app/presentation/widgets/container_info_button.dart';
 import 'package:sandu_app/presentation/widgets/container_news_button.dart';
 import 'package:sandu_app/presentation/widgets/custom_text_field.dart';
+import 'package:sandu_app/presentation/widgets/header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,11 +29,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ValueNotifier<bool> _isAvatarHovered = ValueNotifier(false);
-  final ValueNotifier<bool> _isAvatarPressed = ValueNotifier(false);
-  final ValueNotifier<bool> _isNotifHovered = ValueNotifier(false);
-  final ValueNotifier<bool> _isNotifPressed = ValueNotifier(false);
-
   // State variable
   final ValueNotifier<int> _currentCarouselIndex = ValueNotifier(0);
 
@@ -177,26 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   // 🔹 Data untuk Grid Aksi Cepat
-  final List<Map<String, String>> quickActionList = [
-    {
-      'name': 'Ajukan Surat',
-      'icon':
-          ''' <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.3333 33.3337H20C26.2853 33.3337 29.4282 33.3337 31.3807 31.381C33.3333 29.4285 33.3333 26.2857 33.3333 20.0003C33.3333 13.715 33.3333 10.5722 31.3807 8.61963C30.7763 8.0153 30.0572 7.598 29.166 7.30985C29.1667 7.5924 29.1667 7.88135 29.1667 8.17528V11.7721C29.1667 11.821 29.1672 11.8743 29.1677 11.9315C29.1725 12.499 29.1808 13.45 28.7733 14.32C28.3658 15.1902 27.63 15.7927 27.1908 16.1522C27.147 16.188 27.105 16.2223 27.0678 16.2533L24.557 18.3458C23.1223 19.5413 21.8735 20.5822 20.7508 21.3042C19.5408 22.0825 18.2318 22.6582 16.6667 22.6582C15.1015 22.6582 13.7927 22.0825 12.5825 21.3042C11.4598 20.5822 10.211 19.5413 8.77645 18.3458L6.26562 16.2533C6.22802 16.2222 6.18678 16.1883 6.14252 16.1522C5.70345 15.7927 4.9676 15.1902 4.56007 14.32C4.15253 13.45 4.1608 12.499 4.16573 11.9315C4.16622 11.8744 4.16668 11.821 4.16668 11.7721V8.17526C4.16665 7.88096 4.16663 7.59213 4.16733 7.30927C3.27628 7.59743 2.55737 8.01488 1.95262 8.61963C1.98682e-07 10.5722 0 13.715 0 20.0003C0 26.2857 1.98682e-07 29.4285 1.95262 31.381C3.90523 33.3337 7.04795 33.3337 13.3333 33.3337Z" fill="url(#paint0_linear_515_361)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M7.86616 14.3328L10.2649 16.3318C13.326 18.8827 14.8565 20.1582 16.6668 20.1582C18.477 20.1582 20.0076 18.8827 23.0686 16.3318L25.4675 14.3328C26.0571 13.8413 26.3521 13.5957 26.5095 13.2596C26.6668 12.9237 26.6668 12.5398 26.6668 11.7721V8.33333C26.6668 7.79895 26.6668 7.3009 26.6636 6.83615C26.6441 3.88433 26.5008 2.27477 25.4465 1.22038C24.226 -9.93411e-08 22.2618 0 18.3335 0H15.0001C11.0717 0 9.10754 -9.93411e-08 7.88716 1.22038C6.83278 2.27477 6.68628 3.88433 6.66678 6.83615C6.66369 7.3009 6.66678 7.79895 6.66678 8.33333V11.7721C6.66678 12.5398 6.66678 12.9237 6.82413 13.2596C6.98148 13.5957 7.27636 13.8413 7.86616 14.3328ZM12.0833 6.66667C12.0833 5.97632 12.6429 5.41667 13.3333 5.41667H20C20.6903 5.41667 21.25 5.97632 21.25 6.66667C21.25 7.35702 20.6903 7.91667 20 7.91667H13.3333C12.6429 7.91667 12.0833 7.35702 12.0833 6.66667ZM13.75 11.6667C13.75 10.9763 14.3096 10.4167 15 10.4167H18.3333C19.0236 10.4167 19.5833 10.9763 19.5833 11.6667C19.5833 12.357 19.0236 12.9167 18.3333 12.9167H15C14.3096 12.9167 13.75 12.357 13.75 11.6667Z" fill="url(#paint1_linear_515_361)"/>
-<defs>
-<linearGradient id="paint0_linear_515_361" x1="16.6667" y1="7.30926" x2="17.2763" y2="40.6273" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E8AC00"/>
-<stop offset="1" stop-color="#F9D75C"/>
-</linearGradient>
-<linearGradient id="paint1_linear_515_361" x1="16.6661" y1="-1.32164e-07" x2="17.2755" y2="25.802" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E8AC00"/>
-<stop offset="1" stop-color="#F9D75C"/>
-</linearGradient>
-</defs>
-</svg>
- ''',
-    },
+  final List<Map<String, dynamic>> quickActionList = [
     {
       'name': 'Posyandu',
       'icon':
@@ -211,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
 </svg>
 
  ''',
+      'onPressed': (BuildContext context) {
+        NavigationHelper.navigateWithSlideTransition(context, PosyanduScreen());
+      },
     },
     {
       'name': 'Pasar Lokal',
@@ -226,6 +206,12 @@ class _HomeScreenState extends State<HomeScreen> {
 </svg>
 
  ''',
+      'onPressed': (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PosyanduScreen()),
+        );
+      },
     },
     {
       'name': 'Verifikasi',
@@ -246,6 +232,38 @@ class _HomeScreenState extends State<HomeScreen> {
 </svg>
 
  ''',
+      'onPressed': (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PosyanduScreen()),
+        );
+      },
+    },
+    {
+      'name': 'Janji Temu',
+      'icon':
+          ''' <svg width="38" height="34" viewBox="0 0 38 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M24.6096 4.95081e-05H6.82098C5.9574 0.0300948 5.13643 0.382698 4.52005 0.988295C3.90366 1.59389 3.53662 2.40851 3.49134 3.27142H2.36758C1.77515 3.27142 1.20686 3.50619 0.787173 3.92432C0.367483 4.34245 0.130597 4.90986 0.128395 5.50229C0.147965 6.07489 0.392075 6.6168 0.807961 7.01088C1.22385 7.40496 1.7781 7.61955 2.35093 7.60828H3.46636V12.045H2.36758C1.79027 11.9965 1.21731 12.1792 0.774745 12.5531C0.332181 12.927 0.0562646 13.4613 0.00769538 14.0387C-0.0408738 14.616 0.141882 15.1889 0.515759 15.6315C0.889636 16.0741 1.42401 16.35 2.00132 16.3985C2.12284 16.4152 2.24606 16.4152 2.36758 16.3985H3.46636V20.8103H2.36758C1.77878 20.8081 1.21297 21.0387 0.79352 21.4519C0.374065 21.8652 0.134982 22.4274 0.128395 23.0162C0.128395 23.5968 0.359046 24.1537 0.769609 24.5642C1.18017 24.9748 1.73701 25.2054 2.31764 25.2054H3.46636C3.43571 25.6062 3.48444 26.0091 3.60976 26.391C3.73508 26.7728 3.93452 27.1263 4.19666 27.4309C4.4588 27.7356 4.77849 27.9855 5.1374 28.1665C5.49631 28.3474 5.88739 28.4557 6.28824 28.4852C6.46543 28.5018 6.64379 28.5018 6.82098 28.4852H19.998V27.4696C19.977 25.0482 20.7409 22.685 22.1755 20.7342C23.6102 18.7834 25.6382 17.3498 27.9559 16.6483V3.2298C27.9298 2.36127 27.5653 1.53732 26.9401 0.933883C26.3149 0.330441 25.4785 -0.00468585 24.6096 4.95081e-05ZM17.4342 21.3764C17.431 21.5247 17.3984 21.6709 17.3384 21.8065C17.2784 21.9422 17.1921 22.0646 17.0846 22.1668C16.977 22.2689 16.8503 22.3487 16.7117 22.4017C16.5731 22.4546 16.4254 22.4796 16.2772 22.4751H9.67615C9.52744 22.483 9.37864 22.4614 9.23827 22.4117C9.09791 22.3619 8.96874 22.285 8.85816 22.1852C8.74759 22.0855 8.65778 21.9649 8.59388 21.8304C8.52999 21.6959 8.49326 21.5501 8.4858 21.4013V20.2859C8.4988 19.9863 8.62925 19.7039 8.84892 19.4999C9.06858 19.2958 9.35979 19.1864 9.6595 19.1954H16.2439C16.3922 19.1865 16.5408 19.207 16.6811 19.2558C16.8214 19.3046 16.9507 19.3807 17.0614 19.4798C17.1721 19.5789 17.262 19.699 17.326 19.833C17.39 19.9671 17.4268 20.1125 17.4342 20.2609V21.368V21.3764ZM21.7128 14.767C21.7128 15.3747 21.0719 15.8492 20.1895 15.8492H9.95084C9.11843 15.8492 8.42753 15.3747 8.42753 14.767V13.7265C8.42753 13.1105 9.06849 12.636 9.95084 12.636H20.2478C21.0802 12.636 21.7794 13.1105 21.7794 13.7265L21.7128 14.767ZM24.3349 8.15768C24.3033 8.4753 24.1472 8.76748 23.9007 8.97028C23.6542 9.17308 23.3375 9.26999 23.0197 9.23981H9.80101C9.48325 9.26999 9.16647 9.17308 8.91999 8.97028C8.6735 8.76748 8.51739 8.4753 8.4858 8.15768V7.06722C8.49942 6.90924 8.54404 6.7555 8.6171 6.61478C8.69015 6.47405 8.79022 6.3491 8.91159 6.24706C9.03295 6.14502 9.17323 6.06789 9.32442 6.02009C9.4756 5.97228 9.63472 5.95473 9.79268 5.96844H23.1113C23.2692 5.95353 23.4286 5.96993 23.5803 6.01669C23.7319 6.06345 23.8728 6.13965 23.995 6.24093C24.1171 6.34222 24.2181 6.46659 24.2922 6.60695C24.3662 6.74731 24.4118 6.90088 24.4265 7.05889L24.3349 8.15768Z" fill="url(#paint0_linear_635_3575)"/>
+<path d="M37.5867 20.2023C37.5914 19.9222 37.4874 19.6513 37.2964 19.4463C37.1055 19.2414 36.8425 19.1185 36.5629 19.1035H27.706C27.427 19.1031 27.1586 19.2104 26.9568 19.4032C26.7918 19.5709 26.684 19.7865 26.6488 20.0191V21.2844C26.6444 21.4232 26.6674 21.5616 26.7164 21.6916C26.7655 21.8215 26.8397 21.9406 26.9348 22.0418C27.0299 22.1431 27.144 22.2246 27.2706 22.2818C27.3972 22.3389 27.5339 22.3706 27.6727 22.3749H32.2593L24.1516 30.699C23.9561 30.906 23.8472 31.18 23.8472 31.4648C23.8472 31.7496 23.9561 32.0236 24.1516 32.2306L24.8925 32.9964C25.0006 33.1065 25.1304 33.1929 25.2737 33.2502C25.417 33.3075 25.5706 33.3345 25.7249 33.3294C25.9846 33.3275 26.233 33.2227 26.4158 33.038L34.5234 24.6723V29.2589C34.5189 29.4027 34.543 29.546 34.5945 29.6803C34.6459 29.8147 34.7237 29.9374 34.8231 30.0414C34.9193 30.1436 35.0354 30.2251 35.1642 30.2809C35.293 30.3367 35.4319 30.3657 35.5723 30.366H36.7044C36.8465 30.3717 36.9883 30.3471 37.1203 30.2941C37.2523 30.241 37.3715 30.1605 37.4702 30.058C37.6284 29.8986 37.7356 29.6958 37.7782 29.4753V29.3338L37.5867 20.2023Z" fill="url(#paint1_linear_635_3575)"/>
+<defs>
+<linearGradient id="paint0_linear_635_3575" x1="13.9779" y1="0" x2="13.9779" y2="28.4976" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E8AC00"/>
+<stop offset="1" stop-color="#F9D75C"/>
+</linearGradient>
+<linearGradient id="paint1_linear_635_3575" x1="30.8127" y1="19.1035" x2="30.8127" y2="33.33" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E8AC00"/>
+<stop offset="1" stop-color="#F9D75C"/>
+</linearGradient>
+</defs>
+</svg>
+
+ ''',
+      'onPressed': (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PosyanduScreen()),
+        );
+      },
     },
   ];
 
@@ -446,10 +464,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     // ✅ PENTING: Dispose semua ValueNotifier
     _currentCarouselIndex.dispose();
-    _isAvatarHovered.dispose();
-    _isAvatarPressed.dispose();
-    _isNotifHovered.dispose();
-    _isNotifPressed.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -480,314 +494,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       // 🔹 First Row (Logo, Name, Notification, Profile)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // 🔹 Logo and User Info
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Logo
-                              Image.asset(
-                                'assets/images/logo.png',
-                                width: 60,
-                                height: 60,
-                              ),
-
-                              // User Info
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Hallo,',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: AppSizes.fontSizeL,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.textPrimary,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSizes.xs),
-                                      Text(
-                                        'Dandy_tr2412',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: AppSizes.fontSizeXS,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  // Verified Badge
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppColors.orange5,
-                                          AppColors.orange2,
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        AppSizes.radiusFull,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppSizes.s,
-                                      vertical: 2,
-                                    ),
-                                    child: Text(
-                                      'Terverifikasi',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: AppSizes.fontSizeXS,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-
-                          // 🔹 Notification and Profile
-                          Row(
-                            children: [
-                              // Notification
-                              ValueListenableBuilder<bool>(
-                                valueListenable: _isNotifHovered,
-                                builder: (context, isHovered, child) {
-                                  return ValueListenableBuilder<bool>(
-                                    valueListenable: _isNotifPressed,
-                                    builder: (context, isPressed, child) {
-                                      return MouseRegion(
-                                        onEnter: (_) => setState(
-                                          () => _isNotifHovered.value = true,
-                                        ),
-                                        onExit: (_) => setState(() {
-                                          _isNotifHovered.value = false;
-                                          _isNotifPressed.value = false;
-                                        }),
-                                        child: GestureDetector(
-                                          onTapDown: (_) => setState(
-                                            () => _isNotifPressed.value = true,
-                                          ),
-                                          onTapUp: (_) => setState(
-                                            () => _isNotifPressed.value = false,
-                                          ),
-                                          onTapCancel: () => setState(
-                                            () => _isNotifPressed.value = false,
-                                          ),
-                                          onTap: () {},
-                                          child: AnimatedContainer(
-                                            duration: const Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            padding: const EdgeInsets.all(
-                                              AppSizes.xs,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: _getNotifBackgroundColor(
-                                                isHovered,
-                                                isPressed,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                    AppSizes.radiusFull,
-                                                  ),
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                // Notification Icon
-                                                ShaderMask(
-                                                  shaderCallback: (Rect bounds) {
-                                                    return _getNotifIconGradient(
-                                                      isHovered,
-                                                      isPressed,
-                                                    ).createShader(bounds);
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.notifications,
-                                                    color: Colors.white,
-                                                    size: 25,
-                                                  ),
-                                                ),
-
-                                                // Notification Badge
-                                                Positioned(
-                                                  right: 0,
-                                                  top: 0,
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(1),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color:
-                                                            _getNotifBackgroundColor(
-                                                              isHovered,
-                                                              isPressed,
-                                                            ),
-                                                        width: 2,
-                                                      ),
-                                                    ),
-                                                    constraints:
-                                                        const BoxConstraints(
-                                                          minWidth: 15,
-                                                          minHeight: 15,
-                                                        ),
-                                                    child: Text(
-                                                      '3',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 8,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: Colors.white,
-                                                          ),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: AppSizes.s),
-                              // Profile
-                              ValueListenableBuilder<bool>(
-                                valueListenable: _isAvatarHovered,
-                                builder: (context, isHovered, child) {
-                                  return ValueListenableBuilder<bool>(
-                                    valueListenable: _isAvatarPressed,
-                                    builder: (context, isPressed, child) {
-                                      return MouseRegion(
-                                        onEnter: (_) => setState(
-                                          () => _isAvatarHovered.value = true,
-                                        ),
-                                        onExit: (_) => setState(
-                                          () => _isAvatarHovered.value = false,
-                                        ),
-                                        child: GestureDetector(
-                                          onTapDown: (_) => setState(
-                                            () => _isAvatarPressed.value = true,
-                                          ),
-                                          onTapUp: (_) => setState(
-                                            () =>
-                                                _isAvatarPressed.value = false,
-                                          ),
-                                          onTapCancel: () => setState(
-                                            () =>
-                                                _isAvatarPressed.value = false,
-                                          ),
-                                          onTap: () {},
-                                          child: AnimatedContainer(
-                                            duration: const Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            width: 50,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              gradient: _getBorderGradient(
-                                                isHovered,
-                                                isPressed,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(3),
-                                              child: CircleAvatar(
-                                                backgroundImage: const AssetImage(
-                                                  'assets/images/profile.jpg',
-                                                ),
-                                                backgroundColor: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: AppSizes.xs),
-
-                      // 🔹 Action Buttons Row
-                      Row(
-                        children: [
-                          // Buat Laporan Button
-                          ButtonWidthText(
-                            text: 'Buat Laporan',
-                            onPressed: () {},
-                            fontSize: 12,
-                            colors: [
-                              AppColors.primary,
-                              AppColors.cyan1,
-                              AppColors.background,
-                              AppColors.cyan1,
-                            ],
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.radiusS,
-                            ),
-                            gradient: true,
-                            beginGradientAlignment: Alignment.centerLeft,
-                            endGradientAlignment: Alignment.centerRight,
-                            textColor: Colors.white,
-                            icon: const Icon(
-                              Icons.edit_square,
-                              size: 15,
-                              color: Colors.white,
-                            ),
-                            paddingHorizontal: AppSizes.s,
-                            paddingVertical: AppSizes.s,
-                          ),
-
-                          const SizedBox(width: AppSizes.s),
-
-                          // Panduan Button
-                          ButtonWidthText(
-                            text: 'Panduan',
-                            onPressed: () {},
-                            fontSize: 12,
-                            colors: [
-                              Colors.white,
-                              AppColors.white4,
-                              AppColors.cyan1,
-                              AppColors.white4,
-                            ],
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.radiusS,
-                            ),
-                            gradient: true,
-                            beginGradientAlignment: Alignment.topCenter,
-                            endGradientAlignment: Alignment.bottomCenter,
-                            textColor: AppColors.primary,
-                            icon: const Icon(
-                              Icons.menu_book_rounded,
-                              size: 15,
-                              color: AppColors.primary,
-                            ),
-                            paddingHorizontal: AppSizes.s,
-                            paddingVertical: AppSizes.s,
-                          ),
-                        ],
-                      ),
+                      Header(),
 
                       const SizedBox(height: AppSizes.s),
 
@@ -811,7 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const SizedBox(width: AppSizes.s),
                           ButtonWidthIcon(
-                            onPressed: () {},
+                            onPressed: (BuildContext context) {},
                             colors: [
                               AppColors.secondary,
                               AppColors.orange1,
@@ -995,7 +702,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     ButtonWidthSVG(
-                                      onPressed: (context) {},
+                                      onPressed: quickAction['onPressed'],
                                       colors: [
                                         AppColors.orange8,
                                         AppColors.orange9,
@@ -1254,65 +961,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-  }
-
-  // for profile
-  LinearGradient _getBorderGradient(bool isHovered, bool isPressed) {
-    if (isPressed) {
-      // Gradient saat ditekan (lebih terang/cerah)
-      return LinearGradient(
-        colors: [AppColors.orange4, AppColors.orange1],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      );
-    } else if (isHovered) {
-      // Gradient saat hover (lebih kontras)
-      return LinearGradient(
-        colors: [AppColors.orange4, AppColors.orange1],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      );
-    } else {
-      // Gradient normal
-      return LinearGradient(
-        colors: [AppColors.primary, AppColors.white2],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      );
-    }
-  }
-
-  // for notifikasi
-  Color _getNotifBackgroundColor(bool isHovered, bool isPressed) {
-    if (isPressed) {
-      return AppColors.orange7;
-    } else if (isHovered) {
-      return AppColors.orange7;
-    } else {
-      return AppColors.white2;
-    }
-  }
-
-  LinearGradient _getNotifIconGradient(bool isHovered, bool isPressed) {
-    if (isPressed) {
-      return LinearGradient(
-        colors: [AppColors.orange2, AppColors.orange4],
-        begin: Alignment.bottomLeft,
-        end: Alignment.topRight,
-      );
-    } else if (isHovered) {
-      return LinearGradient(
-        colors: [AppColors.orange2, AppColors.orange4],
-        begin: Alignment.bottomLeft,
-        end: Alignment.topRight,
-      );
-    } else {
-      return LinearGradient(
-        colors: [AppColors.primary, AppColors.white2],
-        begin: Alignment.bottomLeft,
-        end: Alignment.topRight,
-      );
-    }
   }
 }
 

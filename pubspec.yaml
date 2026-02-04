@@ -107,7 +107,7 @@ flutter_launcher_icons:
 # Di bagian paling bawah file pubspec.yaml
 flutter_native_splash:
   # Path ke gambar logo Anda
-  image: assets/images/logo.png
+  image: assets/images/logo2.png
   # Warna latar belakang splash screen (gunakan format hex atau nama warna)
   color: "#74DED0"
   # Anda juga bisa menggunakan gambar latar belakang penuh, bukan hanya warna
@@ -121,3 +121,6 @@ flutter_native_splash:
   # Jika Anda mau layar tetap ada sampai Flutter siap
   android_gravity: center
   ios_content_mode: center
+  android_12:
+    image: assets/images/logo2.png # Ikon khusus dengan padding
+    color: "#74DED0"

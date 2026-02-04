@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ButtonWidthIcon extends StatefulWidget {
-  final VoidCallback onPressed;
+  final Function(BuildContext) onPressed;
   final List<Color> colors;
   final BorderRadius borderRadius;
   final IconData icon;
@@ -59,7 +59,7 @@ class _ButtonWidthIconState extends State<ButtonWidthIcon> {
               onTapCancel: () => setState(() => _isPressed.value = false),
               onTap: () {
                 setState(() => _isPressed.value = false);
-                widget.onPressed();
+                widget.onPressed(context);
               },
               child: MouseRegion(
                 onEnter: (_) => setState(() => _isHovered.value = true),

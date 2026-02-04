@@ -48,24 +48,23 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
-<string>Aplikasi ini membutuhkan akses lokasi untuk menampilkan posisi Anda saat ini.</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>Aplikasi ini membutuhkan akses lokasi setiap saat.</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Aplikasi ini membutuhkan akses galeri untuk memilih foto profil.</string>
-<key>NSCameraUsageDescription</key>
-<string>Aplikasi ini membutuhkan akses kamera untuk mengambil foto secara langsung.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Aplikasi ini membutuhkan akses mikrofon (jika Anda juga merekam video).</string>
-<key>UIBackgroundModes</key>
-<array>
-   <string>fetch</string>
-   <string>remote-notification</string>
-</array>
-<key>NSAppleMusicUsageDescription</key>
-<string>Aplikasi membutuhkan izin untuk memilih file audio.</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Aplikasi membutuhkan izin untuk memilih file media.</string>
-
+		<string>Aplikasi ini membutuhkan akses lokasi untuk menampilkan posisi Anda saat ini.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Aplikasi ini membutuhkan akses lokasi setiap saat.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Aplikasi ini membutuhkan akses galeri untuk memilih foto profil.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Aplikasi ini membutuhkan akses kamera untuk mengambil foto secara langsung.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Aplikasi ini membutuhkan akses mikrofon (jika Anda juga merekam video).</string>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
+		<key>NSAppleMusicUsageDescription</key>
+		<string>Aplikasi membutuhkan izin untuk memilih file audio.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Aplikasi membutuhkan izin untuk memilih file media.</string>
 	</dict>
 </plist>

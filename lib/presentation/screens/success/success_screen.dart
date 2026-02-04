@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sandu_app/core/constants/app_colors.dart';
 import 'package:sandu_app/core/constants/app_sizes.dart';
+import 'package:sandu_app/presentation/widgets/bubble_background.dart';
 import 'package:sandu_app/presentation/widgets/button_width_text.dart';
 
 class SuccessScreen extends StatelessWidget {
@@ -33,22 +34,28 @@ class SuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints
-                    .maxHeight, // Paksa tinggi minimal seukuran layar
-              ),
-              child: IntrinsicHeight(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.string(
-                        ''' <svg width="340" height="259" viewBox="0 0 340 259" fill="none" xmlns="http://www.w3.org/2000/svg">
+      body: Stack(
+        children: [
+          // 🔹 Bubbles Background
+          const BubbleBackground(),
+
+          // content
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints
+                        .maxHeight, // Paksa tinggi minimal seukuran layar
+                  ),
+                  child: IntrinsicHeight(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.string(
+                            ''' <svg width="340" height="259" viewBox="0 0 340 259" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M24.089 245.328C24.089 245.328 -7.35297 223.235 7.10303 195.468C21.562 167.701 50.477 125.069 36.007 103.331C21.562 81.6004 20.089 11.9764 103.222 1.30336C169.528 -7.20364 189.681 27.8154 199.958 51.7154C213.513 83.2424 201.399 140.797 264.795 148.39C328.207 155.98 364.427 187.334 319.007 238.436C299.157 260.768 24.089 245.328 24.089 245.328Z" fill="#9BDDD4"/>
               <path d="M137.618 227.952C90.827 238.178 52.718 223.979 65.723 199.819C78.72 175.659 70.755 172.613 60.729 165.013C50.703 157.416 28.177 136.254 50.121 113.011C72.092 89.7814 55.403 83.0414 48.544 69.3704C28.508 29.4894 109.767 13.1154 87.779 49.8194C71.273 77.3664 72.143 98.4613 92.655 112.477C113.184 126.496 117.279 133.889 116.372 151.214C115.462 168.539 108.376 205.362 129.294 203.829C150.196 202.296 161.616 222.704 137.618 227.952Z" fill="#EBF2FF"/>
               <path d="M52.624 63.9333C50.451 59.8053 49.941 39.5633 69.58 40.6123C81.532 41.2523 75.326 57.5753 72.615 70.1353C69.912 82.6963 71.759 102.416 76.754 110.538C85.981 125.518 84.009 131.822 72.585 144.674C72.585 144.674 66.653 154.219 77.596 164.462C88.536 174.704 84.309 202.912 97.019 207.483C109.729 212.051 116.909 221.797 108.199 222.703C99.509 223.617 63.462 227.119 72.95 203.385C86.78 168.833 59.818 158.59 53.101 150.923C46.942 143.895 41.674 128.191 59.537 108.497C73.357 93.2533 59.287 76.6493 52.624 63.9333Z" fill="#9BDDD4"/>
@@ -85,52 +92,56 @@ class SuccessScreen extends StatelessWidget {
               </svg>
               
                ''',
-                        height: 200,
-                      ),
-                      const SizedBox(height: AppSizes.m),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: titleSize,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSizes.m),
-                      Text(
-                        subTitle,
-                        style: TextStyle(
-                          fontSize: subTitleSize,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary.withOpacity(0.8),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                            height: 200,
+                          ),
+                          const SizedBox(height: AppSizes.m),
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: titleSize,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(height: AppSizes.m),
+                          Text(
+                            subTitle,
+                            style: TextStyle(
+                              fontSize: subTitleSize,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary.withOpacity(0.8),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
 
-                      const SizedBox(height: AppSizes.m),
+                          const SizedBox(height: AppSizes.m),
 
-                      // Button
-                      Container(
-                        constraints: BoxConstraints(maxWidth: 200),
-                        child: ButtonWidthText(
-                          text: buttonText,
-                          onPressed: onPressed,
-                          fontSize: buttonTextSize,
-                          textColor: buttonColors[4],
-                          colors: buttonColors,
-                          borderRadius: BorderRadius.circular(AppSizes.radiusS),
-                          gradient: true,
-                          paddingHorizontal: paddingHorizontalButton,
-                          paddingVertical: paddingVerticalButton,
-                        ),
+                          // Button
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 200),
+                            child: ButtonWidthText(
+                              text: buttonText,
+                              onPressed: onPressed,
+                              fontSize: buttonTextSize,
+                              textColor: buttonColors[4],
+                              colors: buttonColors,
+                              borderRadius: BorderRadius.circular(
+                                AppSizes.radiusS,
+                              ),
+                              gradient: true,
+                              paddingHorizontal: paddingHorizontalButton,
+                              paddingVertical: paddingVerticalButton,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

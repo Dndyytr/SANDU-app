@@ -22,6 +22,7 @@ class ContainerNewsButton extends StatefulWidget {
   final Color? colorLocation;
   final String? dateCreated;
   final String? likes;
+  final Function(BuildContext)? onPressed;
 
   const ContainerNewsButton({
     super.key,
@@ -42,6 +43,7 @@ class ContainerNewsButton extends StatefulWidget {
     this.colorLocation,
     this.dateCreated,
     this.likes,
+    this.onPressed,
   });
 
   @override
@@ -279,7 +281,9 @@ class _ContainerNewsButtonState extends State<ContainerNewsButton> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: widget.onPressed != null
+                                ? () => widget.onPressed!(context)
+                                : null,
                             style: ButtonStyle(
                               backgroundColor:
                                   WidgetStateProperty.resolveWith<Color>((

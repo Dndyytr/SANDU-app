@@ -3,31 +3,37 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sandu_app/core/constants/app_colors.dart';
 import 'package:sandu_app/core/constants/app_sizes.dart';
+import 'package:sandu_app/presentation/screens/service/skd/skd_screen.dart';
 
-class GovernmentScreen extends StatefulWidget {
-  const GovernmentScreen({super.key});
+class PosyanduScreen extends StatefulWidget {
+  const PosyanduScreen({super.key});
 
   @override
-  State<GovernmentScreen> createState() => _GovernmentScreenState();
+  State<PosyanduScreen> createState() => _PosyanduScreenState();
 }
 
-class _GovernmentScreenState extends State<GovernmentScreen> {
+class _PosyanduScreenState extends State<PosyanduScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final ValueNotifier<String?> _selectedFilter = ValueNotifier(null);
+  final ScrollController _dateScrollController = ScrollController();
   final ValueNotifier<int> _selectedDateIndex = ValueNotifier(4);
+  int _announcementIndex = 0;
 
-  // 🔹 Data untuk Grid Aksi Cepat
-  final List<Map<String, dynamic>> announcementList = [
-    {
-      'official': true,
-      'title': 'Musyawarah Desa',
-      'subTitle': 'Lurah mengadakan musyawarah yang dilaksanakan di balai desa',
-      'date': '10 Nov 2025, 10:00 WIB',
-    },
-    {
-      'official': false,
-      'title': 'Pemutusan Air Dusun Wetan',
-      'subTitle': 'Air Dusun Wetan dibuka untuk pelaksanaan pemutusan',
-      'date': '10 Nov 2025, 10:00 WIB',
-    },
+  // audience
+  final List<String> _filterOptions = [
+    'RW Saya',
+    'RW 1',
+    'RW 2',
+    'RW 3',
+    'RW 4',
+    'RW 5',
+    'RW 6',
+    'RW 7',
+    'RW 8',
+    'RW 9',
+    'RW 10',
+    'RW 11',
+    'RW 12',
   ];
 
   // ✅ Data agenda berdasarkan tanggal
@@ -35,108 +41,130 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
     0: [
       // 6 Nov
       {
-        'time': '09:00 WIB',
-        'title': 'Kerja Bakti Desa',
-        'description': 'Gotong royong membersihkan jalan desa',
+        'time': '08:00 WIB',
+        'title': 'Pembukaan & Registrasi',
+        'description': 'Pendaftaran peserta posyandu melati',
+      },
+      {
+        'time': '09:30 WIB',
+        'title': 'Penimbangan Bayi',
+        'description': 'Penimbangan dan pengukuran tinggi badan',
       },
     ],
     1: [
       // 7 Nov
       {
-        'time': '14:00 WIB',
-        'title': 'Rapat RT',
-        'description': 'Rapat rutin RT 03',
+        'time': '09:00 WIB',
+        'title': 'Pemeriksaan Kesehatan',
+        'description': 'Pemeriksaan kesehatan umum oleh petugas',
+      },
+      {
+        'time': '10:30 WIB',
+        'title': 'Konsultasi Gizi',
+        'description': 'Konsultasi nutrisi untuk ibu dan anak',
       },
     ],
     2: [
       // 8 Nov
       {
-        'time': '10:00 WIB',
-        'title': 'Posyandu',
-        'description': 'Pelayanan kesehatan ibu dan anak',
+        'time': '08:30 WIB',
+        'title': 'Imunisasi Lengkap',
+        'description': 'Program imunisasi anak sesuai jadwal',
       },
     ],
     3: [
       // 9 Nov
       {
-        'time': '13:00 WIB',
-        'title': 'Pengajian Rutin',
-        'description': 'Pengajian rutin mingguan di masjid',
+        'time': '10:00 WIB',
+        'title': 'Penyuluhan Kesehatan Ibu',
+        'description': 'Edukasi kesehatan reproduksi dan pemeriksaan kehamilan',
       },
     ],
     4: [
       // 10 Nov (default)
       {
-        'time': '10:00 WIB',
-        'title': 'Musyawarah RKPDes',
-        'description': 'Rencana Kerja Pembangunan Desa 2026',
+        'time': '09:00 WIB',
+        'title': 'Kegiatan Inti Posyandu',
+        'description': 'Pelayanan kesehatan ibu dan anak terpadu',
       },
       {
-        'time': '15:00 WIB',
-        'title': 'Sosialisasi Program',
-        'description': 'Sosialisasi program pemberdayaan masyarakat',
+        'time': '12:00 WIB',
+        'title': 'Pemberian Makanan Tambahan',
+        'description': 'Distribusi PMT dan vitamin untuk balita',
       },
     ],
     5: [
       // 11 Nov
       {
-        'time': '08:00 WIB',
-        'title': 'Senam Pagi',
-        'description': 'Senam pagi bersama di lapangan desa',
+        'time': '10:30 WIB',
+        'title': 'Deteksi Dini Tumbuh Kembang',
+        'description': 'Screening perkembangan anak dengan KPSP',
       },
     ],
     6: [
       // 12 Nov
       {
-        'time': '07:00 WIB',
-        'title': 'Kerja Bakti',
-        'description': 'Kerja bakti pembersihan saluran air',
+        'time': '14:00 WIB',
+        'title': 'Kelas Ibu Hamil',
+        'description': 'Penyuluhan kesehatan untuk ibu hamil dan menyusui',
       },
     ],
     7: [
       // 13 Nov
       {
+        'time': '09:00 WIB',
+        'title': 'Pelayanan Kesehatan Lansia',
+        'description': 'Pengecekan tekanan darah dan kesehatan lansia',
+      },
+      {
         'time': '11:00 WIB',
-        'title': 'Kunjungan Camat',
-        'description': 'Kunjungan dan monitoring dari camat',
+        'title': 'Evaluasi Program Posyandu',
+        'description': 'Rapat evaluasi dan perencanaan bulan depan',
       },
     ],
     8: [], // 14 Nov - kosong
     9: [
       // 15 Nov
       {
-        'time': '16:00 WIB',
-        'title': 'Rapat Koordinasi',
-        'description': 'Rapat koordinasi aparat desa',
+        'time': '10:00 WIB',
+        'title': 'Hari Kesehatan Keluarga',
+        'description': 'Kegiatan terpadu kesehatan seluruh keluarga',
+      },
+      {
+        'time': '13:00 WIB',
+        'title': 'Senam Bersama',
+        'description': 'Senam kesehatan untuk ibu dan lansia',
       },
     ],
   };
 
-  // ✅ Data transparansi proyek
-  final List<Map<String, dynamic>> transparencyList = [
+  final List<Map<String, dynamic>> _children = [
+    {'name': 'Budi', 'age': '2y', 'emoji': '👶'},
+    {'name': 'Siti', 'age': '8bln', 'emoji': '👶'},
+  ];
+
+  final List<Map<String, String>> _announcements = [
     {
-      'name': 'Dana Desa 2025',
-      'budget': 'Rp 1.200.000.000',
-      'percentage': '78%',
-      'progress': 0.78,
+      'title': 'Bawa KMS & kain lap...',
+      'content':
+          'Pastikan membawa buku KMS dan kain lap sendiri untuk alas timbangan.',
     },
     {
-      'name': 'Proyek Jalan RT 03',
-      'budget': 'Rp 40.000.000',
-      'percentage': '50%',
-      'progress': 0.50,
-    },
-    {
-      'name': 'Proyek Pembangunan Posyandu',
-      'budget': 'Rp 20.000.000',
-      'percentage': '80%',
-      'progress': 0.80,
+      'title': 'Jadwal Imunisasi',
+      'content': 'Imunisasi campak pada tanggal 15 November 2024.',
     },
   ];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    // ✅ PENTING: Dispose semua ValueNotifier
+    _searchController.dispose();
+    _selectedFilter.dispose();
+    _dateScrollController.dispose();
     _selectedDateIndex.dispose();
     super.dispose();
   }
@@ -150,7 +178,7 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
         toolbarHeight: 40,
         centerTitle: false,
         title: Text(
-          'Pemerintahan',
+          'Posyandu',
           style: GoogleFonts.poppins(
             fontSize: AppSizes.fontSizeM,
             color: AppColors.textPrimary,
@@ -264,7 +292,7 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                             children: [
                               // title
                               Text(
-                                'Pemerintahan Desa Utama',
+                                'Posyandu Melati - RT 06',
                                 style: GoogleFonts.poppins(
                                   fontSize: AppSizes.fontSizeL,
                                   color: Colors.white,
@@ -273,7 +301,7 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                               ),
                               // subtitle
                               Text(
-                                'Info resmi, transparansi & partisipasi',
+                                'Next: 28 Oktober - 08:00',
                                 style: GoogleFonts.poppins(
                                   fontSize: AppSizes.fontSizeS,
                                   color: Colors.white.withOpacity(0.9),
@@ -287,125 +315,9 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // proyek aktif
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white1,
-                                      borderRadius: BorderRadius.circular(
-                                        AppSizes.s,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Proyek Aktif:',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '6',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: AppSizes.fontSizeXS,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: AppSizes.xs),
-
-                                  // realisasi
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white1,
-                                      borderRadius: BorderRadius.circular(
-                                        AppSizes.s,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Realisasi:',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '78%',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: AppSizes.fontSizeXS,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppSizes.xs),
-
-                                  // pengumuman
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white1,
-                                      borderRadius: BorderRadius.circular(
-                                        AppSizes.s,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Pengumuman:',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '1',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: AppSizes.fontSizeXS,
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 14),
-
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // lihat pengumuman
+                                  // daftar hadir
                                   Expanded(
-                                    flex: 6,
+                                    flex: 5,
                                     child: TextButton(
                                       onPressed: () {},
                                       style: ButtonStyle(
@@ -453,7 +365,7 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Lihat Pengumuman',
+                                        'Daftar Hadir',
                                         style: GoogleFonts.poppins(
                                           fontSize: AppSizes.fontSizeS,
                                           color: Colors.white,
@@ -468,10 +380,17 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
 
                                   // ajukan usulan
                                   Expanded(
-                                    flex: 5,
+                                    flex: 7,
                                     child: TextButton(
                                       onPressed: () {},
                                       style: ButtonStyle(
+                                        side: WidgetStateProperty.all(
+                                          const BorderSide(
+                                            color: Colors
+                                                .white, // Sesuaikan warna border
+                                            width: 1.0, // Ketebalan border
+                                          ),
+                                        ),
                                         backgroundColor:
                                             WidgetStateProperty.resolveWith<
                                               Color
@@ -485,7 +404,8 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                               )) {
                                                 return AppColors.cyan1;
                                               }
-                                              return AppColors.secondary;
+                                              return AppColors.primary
+                                                  .withOpacity(0.7);
                                             }),
                                         padding: WidgetStateProperty.all(
                                           const EdgeInsets.symmetric(
@@ -508,25 +428,75 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Ajukan Usulan',
+                                        'Simpan ke Kalender',
                                         style: GoogleFonts.poppins(
                                           fontSize: AppSizes.fontSizeS,
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600,
                                         ),
+                                        softWrap: false,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
+
                               const SizedBox(height: AppSizes.s),
+
+                              TextButton(
+                                onPressed: () {},
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      WidgetStateProperty.resolveWith<Color>((
+                                        Set<WidgetState> states,
+                                      ) {
+                                        if (states.contains(
+                                          WidgetState.pressed,
+                                        )) {
+                                          return AppColors.cyan1;
+                                        } else if (states.contains(
+                                          WidgetState.hovered,
+                                        )) {
+                                          return AppColors.cyan1;
+                                        }
+                                        return AppColors.secondary;
+                                      }),
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 6,
+                                    ),
+                                  ),
+                                  minimumSize: WidgetStateProperty.all(
+                                    const Size(double.infinity, 0),
+                                  ),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: WidgetStateProperty.all(
+                                    // Gunakan WidgetStateProperty (pengganti MaterialStateProperty di versi terbaru)
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        AppSizes.radiusS,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Ikut/Rsvp',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: AppSizes.fontSizeS,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-
+                  const SizedBox(height: AppSizes.s),
                   Expanded(
                     child: ClipRect(
                       clipper: VerticalOnlyClipper(),
@@ -537,173 +507,61 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'Pengumuman Resmi',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: AppSizes.fontSizeS,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
+                                Expanded(
+                                  flex: 7,
+                                  child: BuildTextField(
+                                    hintText: 'Cari nama anak/RT',
+                                    controller: _searchController,
+                                    focusedColor: Colors.grey.shade50,
+                                    unfocusedColor: Colors.grey.shade100,
+                                    borderColor: Colors.grey.shade400,
+                                    unborderColor: Colors.grey.shade200,
+                                    prefixIcon: Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Icon(
+                                        Icons.search_rounded,
+                                        size: 20,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                TextButton(
-                                  onPressed: () {},
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        WidgetStateProperty.resolveWith<Color>((
-                                          Set<WidgetState> states,
-                                        ) {
-                                          if (states.contains(
-                                            WidgetState.pressed,
-                                          )) {
-                                            return AppColors.cyan2;
-                                          } else if (states.contains(
-                                            WidgetState.hovered,
-                                          )) {
-                                            return AppColors.cyan2;
-                                          }
-                                          return AppColors.cyan1;
-                                        }),
-
-                                    splashFactory: NoSplash.splashFactory,
-                                    overlayColor: WidgetStateProperty.all(
-                                      Colors.transparent,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Lihat Semua',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: AppSizes.fontSizeXS,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                const SizedBox(width: AppSizes.xs),
+                                Expanded(
+                                  flex: 5,
+                                  child: ValueListenableBuilder<String?>(
+                                    valueListenable: _selectedFilter,
+                                    builder: (context, value, child) {
+                                      return BuildDropdown(
+                                        hint: 'Pilih filter',
+                                        label: 'Filter',
+                                        items: _filterOptions,
+                                        borderButton: AppColors.primary
+                                            .withOpacity(0.3),
+                                        buttonColor: Colors.grey[50],
+                                        hintColor: AppColors.textPrimary,
+                                        selectedItemColor: Colors.white,
+                                        borderColor: AppColors.primary
+                                            .withOpacity(0.5),
+                                        backgroundColor: [
+                                          Colors.grey.shade400,
+                                          Colors.grey.shade300,
+                                          Colors.grey.shade300,
+                                        ],
+                                        value:
+                                            value, // ← Nilai dari ValueNotifier
+                                        onChanged: (newValue) {
+                                          _selectedFilter.value =
+                                              newValue; // ← Update ValueNotifier
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
                               ],
                             ),
-
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              clipBehavior: Clip.none,
-                              child: Row(
-                                children: [
-                                  for (
-                                    int index = 0;
-                                    index < announcementList.length;
-                                    index++
-                                  ) ...[
-                                    Container(
-                                      width:
-                                          (MediaQuery.of(context).size.width) /
-                                          1.7,
-                                      constraints: BoxConstraints(
-                                        maxHeight: 130,
-                                      ),
-                                      padding: EdgeInsets.all(AppSizes.s),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.2,
-                                            ),
-                                            blurRadius: 3,
-                                            spreadRadius: 0,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(
-                                          AppSizes.radiusS,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Badge
-                                          if (announcementList[index]['official'])
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    AppColors.orange5,
-                                                    AppColors.orange2,
-                                                  ],
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                      AppSizes.radiusFull,
-                                                    ),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: AppSizes.s,
-                                                    vertical: 2,
-                                                  ),
-                                              child: Text(
-                                                'OFFICIAL',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: AppSizes.fontSizeXS,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          const SizedBox(height: AppSizes.xs),
-                                          Text(
-                                            announcementList[index]['title'],
-                                            style: GoogleFonts.poppins(
-                                              fontSize: AppSizes.fontSizeS,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.textPrimary,
-                                            ),
-                                          ),
-                                          Text(
-                                            announcementList[index]['subTitle'],
-                                            style: GoogleFonts.poppins(
-                                              fontSize: AppSizes.fontSizeXS,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.textSecondary,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Text(
-                                                announcementList[index]['date'],
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors.cyan1,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (index < announcementList.length - 1)
-                                      const SizedBox(width: 14),
-                                  ],
-                                ],
-                              ),
-                            ),
-
                             const SizedBox(height: AppSizes.s),
-
-                            Text(
-                              'Agenda & Musyawarah',
-                              style: GoogleFonts.poppins(
-                                fontSize: AppSizes.fontSizeS,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-
                             // date selector
                             ValueListenableBuilder<int>(
                               valueListenable: _selectedDateIndex,
@@ -1039,119 +897,63 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                             ),
 
                             const SizedBox(height: AppSizes.s),
-
                             Text(
-                              'Transparansi & Proyek',
+                              'Data Anak',
                               style: GoogleFonts.poppins(
                                 fontSize: AppSizes.fontSizeS,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textPrimary,
                               ),
                             ),
-
-                            const SizedBox(height: 12),
-
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              clipBehavior: Clip.none,
-                              child: Row(
-                                children: [
-                                  for (
-                                    int index = 0;
-                                    index < transparencyList.length;
-                                    index++
-                                  ) ...[
-                                    Container(
-                                      width:
-                                          (MediaQuery.of(context).size.width) /
-                                          1.6,
-                                      constraints: BoxConstraints(
-                                        maxHeight: 110,
-                                      ),
-                                      padding: EdgeInsets.all(AppSizes.s),
-                                      decoration: BoxDecoration(
-                                        color: index == 0
-                                            ? AppColors.white1
-                                            : Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                          AppSizes.radiusS,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.2,
-                                            ),
-                                            blurRadius: 3,
-                                            spreadRadius: 0,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            transparencyList[index]['name'],
-                                            style: GoogleFonts.poppins(
-                                              fontSize: AppSizes.fontSizeXS,
-                                              color: AppColors.textSecondary,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            transparencyList[index]['budget'],
-                                            style: GoogleFonts.poppins(
-                                              fontSize: AppSizes.fontSizeM,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.textPrimary,
-                                            ),
-                                          ),
-                                          SizedBox(height: 6),
-                                          Text(
-                                            transparencyList[index]['percentage'],
-                                            style: GoogleFonts.poppins(
-                                              fontSize: AppSizes.fontSizeS,
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.bottomLeft,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: LinearProgressIndicator(
-                                                  value:
-                                                      transparencyList[index]['progress'],
-                                                  backgroundColor: Colors.white,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(AppColors.primary),
-                                                  minHeight: 8,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (index < transparencyList.length - 1)
-                                      const SizedBox(width: 14),
-                                  ],
-                                ],
+                            const SizedBox(height: AppSizes.s),
+                            _buildMyChildrenSection(),
+                            const SizedBox(height: AppSizes.s),
+                            Text(
+                              'Aksi Cepat',
+                              style: GoogleFonts.poppins(
+                                fontSize: AppSizes.fontSizeS,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
                               ),
                             ),
-
-                            const SizedBox(height: AppSizes.m),
-
-                            // buttons
+                            const SizedBox(height: AppSizes.s),
+                            _buildQuickActionsSection(),
+                            const SizedBox(height: AppSizes.s),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Snapshot KPI',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: AppSizes.fontSizeS,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                Text(
+                                  'Posyandu Terdekat',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: AppSizes.fontSizeS,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSizes.s),
+                            _buildKPIandMapSection(),
+                            const SizedBox(height: AppSizes.s),
+                            Text(
+                              'Pengumuman/Tips',
+                              style: GoogleFonts.poppins(
+                                fontSize: AppSizes.fontSizeS,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: AppSizes.s),
+                            _buildAnnouncementSection(),
+                            const SizedBox(height: AppSizes.s),
                             Row(
                               children: [
                                 Expanded(
@@ -1173,25 +975,36 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                         ),
                                       ),
                                     ),
-                                    child: Text(
-                                      'Lihat Semua Proyek',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Kontak Bidan',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: AppSizes.fontSizeS,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          '(Call)',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: AppSizes.fontSizeS,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 4),
+                                SizedBox(width: 6),
                                 Expanded(
-                                  child: OutlinedButton(
+                                  child: ElevatedButton(
                                     onPressed: () {},
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: AppColors.primary,
-                                        width: 2,
-                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                      disabledBackgroundColor:
+                                          Colors.grey.shade300,
                                       padding: EdgeInsets.symmetric(
                                         vertical: 10,
                                       ),
@@ -1204,19 +1017,30 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
                                         ),
                                       ),
                                     ),
-                                    child: Text(
-                                      'Unduh Laporan APBDes',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primary,
-                                      ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Hubungi Kades',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: AppSizes.fontSizeS,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          '(Chat)',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: AppSizes.fontSizeS,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: AppSizes.m),
                           ],
                         ),
                       ),
@@ -1227,6 +1051,448 @@ class _GovernmentScreenState extends State<GovernmentScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMyChildrenSection() {
+    return SizedBox(
+      height: 120,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        children: [
+          ..._children
+              .map(
+                (child) => _buildChildCard(
+                  emoji: child['emoji']!,
+                  name: child['name']!,
+                  age: child['age']!,
+                ),
+              )
+              .toList(),
+          _buildAddChildCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChildCard({
+    required String emoji,
+    required String name,
+    required String age,
+  }) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE082),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(emoji, style: const TextStyle(fontSize: 28)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '[$emoji $name, $age]',
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddChildCard() {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.grey[400]!,
+          style: BorderStyle.solid,
+          width: 2,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            // Handle add child
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add_circle_outline, size: 40, color: Colors.grey[600]),
+              const SizedBox(height: 8),
+              Text(
+                'Tambah Anak',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionsSection() {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 0.9,
+      children: [
+        _buildQuickActionCard(
+          icon: Icons.vaccines_outlined,
+          label: 'Daftar\nImunisasi',
+          color: const Color(0xFF00897B),
+        ),
+        _buildQuickActionCard(
+          icon: Icons.assignment_outlined,
+          label: 'Pendaftaran\nAnak',
+          color: const Color(0xFFFF8A65),
+        ),
+        _buildQuickActionCard(
+          icon: Icons.description_outlined,
+          label: 'Lihat Riwayat\nKMS',
+          color: const Color(0xFF8D6E63),
+        ),
+        _buildQuickActionCard(
+          icon: Icons.medical_services_outlined,
+          label: 'Konsultasi\nBidan',
+          color: const Color(0xFF64B5F6),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionCard({
+    required IconData icon,
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            // Handle quick action
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 32, color: color),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildKPIandMapSection() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Personal Alert',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                '1 anak belum imunisasi bulan ini',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      height: 1,
+                      color: Colors.grey[300],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.error_outline_rounded,
+                            color: Colors.orange,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Personal Intens',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                '2 kunjungan terakhir — 12 Okt, 05 Sep ',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(child: _buildMapCard()),
+      ],
+    );
+  }
+
+  Widget _buildMapCard() {
+    return Container(
+      height: 125,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            // Placeholder for Google Maps
+            Container(
+              color: Colors.grey[300],
+              child: Center(
+                child: Icon(Icons.map, size: 40, color: Colors.grey[500]),
+              ),
+            ),
+            // Location Pin
+            const Center(
+              child: Icon(Icons.location_on, size: 40, color: Colors.red),
+            ),
+            // Google Logo
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'Google',
+                  style: TextStyle(fontSize: 10, color: Colors.black54),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnnouncementSection() {
+    return SizedBox(
+      height: 120,
+      child: PageView.builder(
+        clipBehavior: Clip.none,
+        padEnds: false,
+        controller: PageController(
+          viewportFraction: 0.85,
+          initialPage: _announcementIndex,
+        ),
+        onPageChanged: (index) {
+          setState(() {
+            _announcementIndex = index;
+          });
+        },
+        itemCount: _announcements.length,
+        itemBuilder: (context, index) {
+          bool isLastItem = index == _announcements.length - 2;
+          return Container(
+            margin: isLastItem
+                ? const EdgeInsets.only(right: AppSizes.s)
+                : null,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: index == 0 ? AppColors.primary : AppColors.secondary,
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _announcements[index]['title']!,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _announcements[index]['content']!,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

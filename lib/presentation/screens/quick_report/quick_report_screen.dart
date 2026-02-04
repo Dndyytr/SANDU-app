@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sandu_app/core/constants/app_colors.dart';
 import 'package:sandu_app/core/constants/app_sizes.dart';
+import 'package:sandu_app/presentation/screens/service/skd/skd_screen.dart';
 import 'package:sandu_app/presentation/screens/success/success_screen.dart';
 import 'package:sandu_app/presentation/widgets/custom_text_field.dart';
 import 'package:image_picker/image_picker.dart';
@@ -86,9 +87,9 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
     }
   }
 
-  File? _selectedImage;
-  String? _selectedFileName;
-  File? _selectedFile;
+  final ValueNotifier<File?> _selectedImage = ValueNotifier(null);
+  final ValueNotifier<String?> _selectedFileName = ValueNotifier(null);
+  final ValueNotifier<File?> _selectedFile = ValueNotifier(null);
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImageFromCamera() async {
@@ -98,13 +99,11 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
     );
 
     if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
+      _selectedImage.value = File(pickedFile.path);
 
-        // ✅ Hapus data file/dokumen jika ada
-        _selectedFile = null;
-        _selectedFileName = null;
-      });
+      // ✅ Hapus data file/dokumen jika ada
+      _selectedFile.value = null;
+      _selectedFileName.value = null;
     }
   }
 
@@ -125,13 +124,12 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
 
       if (result != null) {
         // Mengambil file pertama
-        setState(() {
-          _selectedFile = File(result.files.single.path!);
-          _selectedFileName = result.files.single.name;
 
-          // ✅ Hapus data foto jika ada
-          _selectedImage = null;
-        });
+        _selectedFile.value = File(result.files.single.path!);
+        _selectedFileName.value = result.files.single.name;
+
+        // ✅ Hapus data foto jika ada
+        _selectedImage.value = null;
 
         // Simpan ke state atau kirim ke API
       } else {
@@ -146,11 +144,15 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // ✅ Submit form
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+      });
       await Future.delayed(const Duration(seconds: 2));
       if (!mounted) return;
 
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+      });
 
       Navigator.push(
         context,
@@ -194,6 +196,9 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
     _isAnonymous.dispose();
     _publishToFeed.dispose();
     _priority.dispose();
+    _selectedImage.dispose();
+    _selectedFileName.dispose();
+    _selectedFile.dispose();
     super.dispose();
   }
 
@@ -328,7 +333,7 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
 
                           const SizedBox(height: AppSizes.s),
 
-                          WidgetTextFormField(
+                          BuildTextField(
                             hintText: 'Isi judul singkat',
                             controller: TextEditingController(),
                           ),
@@ -346,10 +351,11 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
 
                           const SizedBox(height: AppSizes.s),
 
-                          WidgetTextFormField(
+                          BuildTextField(
                             hintText: 'Tulis deskripsi max 500 karakter',
                             controller: TextEditingController(),
                             minLines: 3,
+                            maxLines: 3,
                           ),
 
                           const SizedBox(height: AppSizes.s),
@@ -447,47 +453,66 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
 
                               const SizedBox(height: AppSizes.s),
 
-                              if (_selectedImage != null) ...[
-                                Container(
-                                  height: 150,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: Image.file(_selectedImage!).image,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ValueListenableBuilder<File?>(
+                                valueListenable: _selectedImage,
+                                builder: (context, imageFile, child) {
+                                  if (imageFile != null) {
+                                    return Container(
+                                      height: 150,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          image: FileImage(imageFile),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return SizedBox.shrink();
+                                },
+                              ),
 
-                              if (_selectedFile != null) ...[
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      AppSizes.radiusS,
-                                    ),
-                                    color: AppColors.white1,
-                                    border: Border.all(
-                                      color: AppColors.primary.withOpacity(0.3),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 8,
-                                  ),
-                                  child: Text(
-                                    _selectedFileName!,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                              ValueListenableBuilder<File?>(
+                                valueListenable: _selectedFile,
+                                builder: (context, file, child) {
+                                  if (file != null) {
+                                    return ValueListenableBuilder<String?>(
+                                      valueListenable: _selectedFileName,
+                                      builder: (context, fileName, child) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              AppSizes.radiusS,
+                                            ),
+                                            color: AppColors.white1,
+                                            border: Border.all(
+                                              color: AppColors.primary
+                                                  .withOpacity(0.3),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 8,
+                                          ),
+                                          child: Text(
+                                            fileName ??
+                                                file.path.split('/').last,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: AppColors.textSecondary,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  return SizedBox.shrink();
+                                },
+                              ),
                             ],
                           ),
 
@@ -581,116 +606,6 @@ class _QuickReportScreenState extends State<QuickReportScreen> {
             child: const Center(child: Loading()),
           ),
       ],
-    );
-  }
-}
-
-class WidgetTextFormField extends StatefulWidget {
-  final String hintText;
-  final String? errorText;
-  final TextEditingController controller;
-  final Function(String)? onChanged;
-  final FormFieldValidator<String>? validator;
-  final int? minLines;
-
-  const WidgetTextFormField({
-    super.key,
-    required this.hintText,
-    this.errorText,
-    required this.controller,
-    this.onChanged,
-    this.validator,
-    this.minLines,
-  });
-
-  @override
-  State<WidgetTextFormField> createState() => _WidgetTextFormFieldState();
-}
-
-class _WidgetTextFormFieldState extends State<WidgetTextFormField> {
-  final ValueNotifier<bool> _isFocused = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Color get _fillColor {
-    if (_isFocused.value) {
-      return AppColors.background2;
-    }
-    return const Color.fromARGB(255, 246, 255, 255);
-  }
-
-  @override
-  void dispose() {
-    _isFocused.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _isFocused,
-      builder: (context, isFocused, child) {
-        return Focus(
-          onFocusChange: (hasFocus) {
-            setState(() {
-              _isFocused.value = hasFocus;
-            });
-          },
-          child: TextFormField(
-            maxLines: null, // Tinggi akan menyesuaikan isi secara dinamis
-            minLines: widget.minLines,
-            textAlign: TextAlign.start,
-            controller: widget.controller,
-            validator: widget.validator,
-            onChanged: widget.onChanged,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              hintStyle: GoogleFonts.poppins(
-                color: AppColors.textSecondary,
-                fontSize: AppSizes.fontSizeS,
-                fontWeight: FontWeight.w500,
-              ),
-              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-
-              filled: true,
-              fillColor: _fillColor,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: AppSizes.s,
-                vertical: AppSizes.s,
-              ),
-              isDense: true,
-              border: _buildBorder(),
-              enabledBorder: _buildBorder(
-                color: AppColors.textSecondary,
-                width: 2,
-              ),
-              focusedBorder: _buildBorder(color: AppColors.primary, width: 2),
-              errorBorder: _buildBorder(color: AppColors.error, width: 2),
-              errorText: widget.errorText,
-              errorStyle: GoogleFonts.poppins(
-                fontSize: AppSizes.fontSizeXS,
-                color: AppColors.error,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            style: GoogleFonts.poppins(
-              fontSize: AppSizes.fontSizeS,
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  OutlineInputBorder _buildBorder({Color? color, double width = 2}) {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppSizes.radiusS),
-      borderSide: BorderSide(color: color ?? Colors.transparent, width: width),
     );
   }
 }
@@ -878,7 +793,7 @@ class LocationButton extends StatelessWidget {
                     child:
                         // Address Info
                         Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: EdgeInsets.all(9),
                           child: Icon(
                             Icons.location_off_rounded,
                             size: 20,
@@ -927,7 +842,7 @@ class LocationButton extends StatelessWidget {
                           }),
                           // Pengaturan ukuran rapat
                           padding: WidgetStateProperty.all(
-                            const EdgeInsets.all(8),
+                            const EdgeInsets.all(9),
                           ),
                           minimumSize: WidgetStateProperty.all(Size.zero),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
